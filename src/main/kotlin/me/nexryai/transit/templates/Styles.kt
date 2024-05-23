@@ -6,6 +6,7 @@ val styles = CssBuilder().apply {
     body {
         backgroundColor = Color("#f4f4f4")
     }
+
     button {
         border = Border.none
         backgroundColor = Color.black
@@ -18,11 +19,21 @@ val styles = CssBuilder().apply {
             cursor = Cursor.pointer
         }
     }
+
+    input {
+        padding = Padding(10.px)
+        borderRadius = 5.px
+        border = Border(1.px, BorderStyle.solid, Color("#ccc"))
+        width = 87.pct
+       marginBottom = 10.px
+    }
+
     h1 {
         fontFamily = "'Ubuntu', sans-serif"
         fontWeight = FontWeight.w400
         fontStyle = FontStyle.normal
     }
+
     rule("#app") {
         maxWidth = 600.px
         margin = Margin(LinearDimension.auto)
@@ -30,18 +41,30 @@ val styles = CssBuilder().apply {
         fontWeight = FontWeight.w300
         fontStyle = FontStyle.normal
     }
+
     rule(".form") {
         display = Display.flex
         flexDirection = FlexDirection.column
         maxWidth = 500.px
         margin = Margin(50.px, LinearDimension.auto, 0.px, LinearDimension.auto)
     }
+
     rule(".form-element") {
         margin = Margin(0.px, 0.px, 32.px, 0.px)
     }
+
     rule(".form-button") {
         textAlign = TextAlign.right
     }
+
+    rule(".form-icon") {
+        marginRight = 10.px
+    }
+
+    rule(".button-icon") {
+        marginRight = 4.px
+    }
+
     rule("#errorLabel") {
         color = Color("#bd0000")
     }

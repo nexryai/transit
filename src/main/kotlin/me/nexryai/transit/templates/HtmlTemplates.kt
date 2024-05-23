@@ -15,6 +15,7 @@ class ContentTemplate: Template<FlowContent> {
             div(classes = "form"){
                 div(classes = "form-element") {
                     p(classes = "form-label") {
+                        i("ti ti-plane-departure form-icon")
                         +"出発地となるバス停・駅"
                     }
                     input {
@@ -26,6 +27,7 @@ class ContentTemplate: Template<FlowContent> {
 
                 div(classes = "form-element") {
                     p(classes = "form-label") {
+                        i("ti ti-plane-arrival form-icon")
                         +"到着地となるバス停・駅"
                     }
                     input {
@@ -37,6 +39,7 @@ class ContentTemplate: Template<FlowContent> {
 
                 div(classes = "form-element") {
                     p(classes = "form-label") {
+                        i("ti ti-clock-hour-10 form-icon")
                         +"目標到着日時"
                     }
                     input {
@@ -62,6 +65,7 @@ class ContentTemplate: Template<FlowContent> {
                     button {
                         id = "search"
                         onClick = "jumpToResult()"
+                        i("ti ti-search button-icon")
                         +"検索"
                     }
                 }
@@ -96,6 +100,20 @@ class HeadTemplate: Template<HTML> {
                 href = "https://fonts.bunny.net/css2??family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Noto+Sans+JP:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
             }
 
+            link {
+                rel = "preconnect"
+                href = "https://cdn.jsdelivr.net"
+            }
+
+            link {
+                rel = "stylesheet"
+                href = "https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
+            }
+
+            meta {
+                name = "viewport"
+                content = "width=device-width, initial-scale=1.0"
+            }
         }
     }
 }
