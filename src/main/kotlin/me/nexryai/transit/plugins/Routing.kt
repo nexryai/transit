@@ -51,10 +51,15 @@ fun Application.configureRouting() {
 
         // Static plugin.
         staticResources("/static", "static")
+        get("/style.css") {
+            val css = me.nexryai.transit.templates.styles
+            call.response.header("Content-Type", "text/css")
+            call.respondText(css.toString(), ContentType.Text.CSS)
+        }
         get("/") {
             call.respondHtmlTemplate(LayoutTemplate()) {
                 header {
-                    +"Ktor"
+                    +"TransitKt"
                 }
                 content {
                     articleTitle {
