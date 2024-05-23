@@ -3,6 +3,7 @@ package me.nexryai.transit.plugins
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
+import io.ktor.server.html.*
 import io.ktor.server.http.content.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.statuspages.*
@@ -10,6 +11,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import me.nexryai.transit.entities.TransitParams
 import me.nexryai.transit.services.TransitInfoService
+import me.nexryai.transit.templates.LayoutTemplate
 
 fun Application.configureRouting() {
     install(StatusPages) {
@@ -48,6 +50,21 @@ fun Application.configureRouting() {
         }
 
         // Static plugin.
-        staticResources("/", "static")
+        staticResources("/static", "static")
+        get("/") {
+            call.respondHtmlTemplate(LayoutTemplate()) {
+                header {
+                    +"Ktor"
+                }
+                content {
+                    articleTitle {
+                        +"Hello from Ktor!"
+                    }
+                    articleText {
+                        +"Kotlin Framework for creating connected systems."
+                    }
+                }
+            }
+        }
     }
 }
