@@ -91,10 +91,15 @@ class TransitInfoService(private val params: TransitParams) {
 
             val destination = train.select("span.destination").text()
             val platform = train.select("span.platform").text()
+            val numOfStops = try {
+                train.select("span.stopNum").text().removeSuffix("駅").toInt()
+            } catch (e: Exception) {
+                0
+            }
 
             println(" | $trainName $destination [$platform]")
 
-            val t = Train(trainName, destination, 0)
+            val t = Train(trainName, destination, numOfStops)
             transferResults[i].train = t
         }
 
@@ -103,16 +108,7 @@ class TransitInfoService(private val params: TransitParams) {
             throw IllegalArgumentException("Invalid data: stations.size != trains.size + 1")
         }
 
-        val lines = routeDetail.select("li.transport").eachText()
-
-        // 路線ごとの所要時間を取得
-        val estimatedTimes = routeDetail.select("li.estimatedTime").eachText()
-
-        // 路線ごとの料金を取得
-        val fares = routeDetail.select("p.fare").eachText()
-
-        // ToDo
-        val result = TransitInfo(fare, 0, transferResults)
+        val result = TransitInfo(fare, transferResults)
         return result
     }
 

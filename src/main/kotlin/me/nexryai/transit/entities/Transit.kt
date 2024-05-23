@@ -22,6 +22,5 @@ data class Transfer(
 @Serializable
 data class TransitInfo(
     val price: String,
-    val numOfTransfers: Int,
     val transfers: List<Transfer>,
 )
