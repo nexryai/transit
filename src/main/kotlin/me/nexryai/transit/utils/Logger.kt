@@ -10,6 +10,7 @@ class Logger {
         val green = "\u001B[32m"
         val yellow = "\u001B[33m"
         val blue = "\u001B[34m"
+        val gray = "\u001B[90m"
 
         val redBold = "\u001B[1m\u001B[31m"
         val greenBold = "\u001B[1m\u001B[32m"
@@ -22,6 +23,10 @@ class Logger {
 
     private val color = ConsoleColors()
     private val callerPackageName = Throwable().stackTrace[1].className.substringBeforeLast('.')
+
+    fun debug(msg: String) {
+        println("${color.gray}[DEBUG] ${color.whiteWithUnderline}${callerPackageName}${color.reset} $msg")
+    }
 
     fun info(msg: String) {
         println("${color.greenBold}[INFO] ${color.whiteWithUnderline}${callerPackageName}${color.reset} $msg")

@@ -48,14 +48,19 @@ class TransitInfoService(private val params: TransitParams) {
         }
 
         // 乗り換え回数を取得
-        val transferCount = routeSummary.select("li.transfer").text()
+        val transferCountStr = routeSummary.select("li.transfer").text()
+        val transferCount = try {
+            transferCountStr.removePrefix("乗換：").removeSuffix("回").toInt()
+        } catch (e: Exception) {
+            0
+        }
 
         // 料金を取得
         val fare = routeSummary.select("li.fare").text()
 
-        println("所要時間：$requiredTime")
-        println(transferCount)
-        println("料金：$fare")
+        log.debug("所要時間：$requiredTime")
+        log.debug("乗り換え回数：$transferCount")
+        log.debug("料金：$fare")
 
         // 乗り換えの詳細情報を取得
         val routeDetail = routeDocument.select("div.routeDetail")
@@ -79,7 +84,7 @@ class TransitInfoService(private val params: TransitParams) {
                 arriveAt
             }
 
-            println("到着:$arriveAt 出発:${departAt}; $stationName <$ridingProps>")
+            log.debug("到着:$arriveAt 出発:${departAt}; $stationName <$ridingProps>")
             transferResults.add(Transfer(stationName, arriveAt, departAt, ridingProps, null))
         }
 
@@ -97,7 +102,7 @@ class TransitInfoService(private val params: TransitParams) {
                 0
             }
 
-            println(" | $trainName $destination [$platform]")
+            log.debug(" | $trainName $destination [$platform]")
 
             val t = Train(trainName, destination, numOfStops)
             transferResults[i].train = t
@@ -108,7 +113,7 @@ class TransitInfoService(private val params: TransitParams) {
             throw IllegalArgumentException("Invalid data: stations.size != trains.size + 1")
         }
 
-        val result = TransitInfo(fare, transferResults)
+        val result = TransitInfo(fare, transferCount, transferResults)
         return result
     }
 
