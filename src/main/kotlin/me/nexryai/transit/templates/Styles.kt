@@ -1,11 +1,48 @@
 package me.nexryai.transit.templates
 
-import kotlinx.css.CssBuilder
-import kotlinx.css.fontFamily
-import kotlinx.css.h1
+import kotlinx.css.*
 
 val styles = CssBuilder().apply {
+    body {
+        backgroundColor = Color("#f4f4f4")
+    }
+    button {
+        border = Border.none
+        backgroundColor = Color.black
+        color = Color.white
+        padding = Padding(10.px)
+        borderRadius = 999.px
+        minWidth = 70.px
+        hover {
+            backgroundColor = Color("#333")
+            cursor = Cursor.pointer
+        }
+    }
     h1 {
-        fontFamily = "Poppins"
+        fontFamily = "'Ubuntu', sans-serif"
+        fontWeight = FontWeight.w400
+        fontStyle = FontStyle.normal
+    }
+    rule("#app") {
+        maxWidth = 600.px
+        margin = Margin(LinearDimension.auto)
+        fontFamily = "'Poppins', 'Noto Sans JP', sans-serif"
+        fontWeight = FontWeight.w300
+        fontStyle = FontStyle.normal
+    }
+    rule(".form") {
+        display = Display.flex
+        flexDirection = FlexDirection.column
+        maxWidth = 500.px
+        margin = Margin(50.px, LinearDimension.auto, 0.px, LinearDimension.auto)
+    }
+    rule(".form-element") {
+        margin = Margin(0.px, 0.px, 32.px, 0.px)
+    }
+    rule(".form-button") {
+        textAlign = TextAlign.right
+    }
+    rule("#errorLabel") {
+        color = Color("#bd0000")
     }
 }

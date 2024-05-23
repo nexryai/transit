@@ -57,19 +57,7 @@ fun Application.configureRouting() {
             call.respondText(css.toString(), ContentType.Text.CSS)
         }
         get("/") {
-            call.respondHtmlTemplate(LayoutTemplate()) {
-                header {
-                    +"TransitKt"
-                }
-                content {
-                    articleTitle {
-                        +"Hello from Ktor!"
-                    }
-                    articleText {
-                        +"Kotlin Framework for creating connected systems."
-                    }
-                }
-            }
+            call.respondHtmlTemplate(LayoutTemplate()) {}
         }
     }
 }
