@@ -66,7 +66,7 @@ class TransitInfoService(private val params: TransitParams) {
         val routeDetail = routeDocument.select("div.routeDetail")
 
         // 乗換駅の取得
-        var transferResults = mutableListOf<Transfer>()
+        val transferResults = mutableListOf<Transfer>()
         val stations = routeDetail.select("div.station")
         for (station in stations) {
             val stationName = station.select("dt").text()
