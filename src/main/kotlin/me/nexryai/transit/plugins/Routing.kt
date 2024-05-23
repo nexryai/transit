@@ -25,7 +25,7 @@ fun Application.configureRouting() {
             val from = call.request.queryParameters["from"].toString()
             val to = call.request.queryParameters["to"].toString()
 
-            if (from.isEmpty() || to.isEmpty()) {
+            if (from == "null" || to == "null" || from.isEmpty() || to.isEmpty()) {
                 call.respondText(text = "400: From or To is empty", status = HttpStatusCode.BadRequest)
                 return@get
             }
@@ -33,8 +33,10 @@ fun Application.configureRouting() {
             val transitInfoService = TransitInfoService(TransitParams(from, to, "2021/10/10", "12:00"))
             val res = try {
                 transitInfoService.getTransit()
+            } catch (e: IllegalArgumentException) {
+                call.respondText(text = "Invalid params or route not found", status = HttpStatusCode.BadRequest)
             } catch (e: Exception) {
-                call.respondText(text = "500: ${e.message}", status = HttpStatusCode.InternalServerError)
+                call.respondText(text = "500: Internal server error", status = HttpStatusCode.InternalServerError)
             }
 
             //jsonを返す

@@ -38,6 +38,9 @@ class TransitInfoService(private val params: TransitParams) {
 
         // 所要時間を取得
         val requiredTime = routeSummary.select("li.time").text()
+        if (requiredTime.isEmpty()) {
+            throw IllegalArgumentException("Route not found")
+        }
 
         // 乗り換え回数を取得
         val transferCount = routeSummary.select("li.transfer").text()
