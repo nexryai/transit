@@ -8,9 +8,13 @@ import me.nexryai.transit.utils.Logger
 
 fun main() {
     val log = Logger()
+    val port = System.getenv("PORT")?.toIntOrNull() ?: 8080
+    val host = System.getenv("HOST") ?: "127.0.0.1"
+
     log.info("Starting server...")
     try {
-        embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
+        log.info("Server started at $host:$port")
+        embeddedServer(Netty, port = port, host = host, module = Application::module)
             .start(wait = true)
     } catch (e: Exception) {
         log.error("Failed to start server: ${e.message}")
