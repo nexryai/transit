@@ -4,11 +4,13 @@ import me.nexryai.transit.entities.Train
 import me.nexryai.transit.entities.Transfer
 import me.nexryai.transit.entities.TransitInfo
 import me.nexryai.transit.entities.TransitParams
+import me.nexryai.transit.utils.Logger
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 
 class TransitInfoService(private val params: TransitParams) {
     private val userAgent: String = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:126.0) Gecko/20100101 Firefox/126.0"
+    private val log = Logger()
 
     private fun genUrl(): String {
         if (params.from.isEmpty() || params.to.isEmpty()) {
@@ -18,11 +20,13 @@ class TransitInfoService(private val params: TransitParams) {
         var url = "https://transit.yahoo.co.jp/search/print"
         url += "?from=${params.from}"
         url += "&to=${params.to}"
+        url += "&type=1&ticket=ic&expkind=1&userpass=1&ws=3&s=0&al=1&shin=1&ex=1&hb=1&lb=1&sr=1&no=1"
         return url
     }
 
     private fun getJsoupDocument(url: String): Document {
         if (url.isEmpty()) {
+            log.warn("URL is empty")
             throw IllegalArgumentException("URL is empty")
         }
 
@@ -39,6 +43,7 @@ class TransitInfoService(private val params: TransitParams) {
         // 所要時間を取得
         val requiredTime = routeSummary.select("li.time").text()
         if (requiredTime.isEmpty()) {
+            log.info("Route not found")
             throw IllegalArgumentException("Route not found")
         }
 
