@@ -1,5 +1,8 @@
 package me.nexryai.transit.plugins
 
+import com.ucasoft.ktor.simpleCache.SimpleCache
+import com.ucasoft.ktor.simpleCache.cacheOutput
+import com.ucasoft.ktor.simpleMemoryCache.memoryCache
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -15,6 +18,7 @@ import me.nexryai.transit.templates.ResultPageTemplate
 import me.nexryai.transit.templates.RouteNotFoundPageTemplate
 import me.nexryai.transit.templates.ServerErrorPageTemplate
 import me.nexryai.transit.templates.WelcomePageTemplate
+import kotlin.time.Duration.Companion.seconds
 
 fun Application.configureRouting() {
     install(StatusPages) {
@@ -24,6 +28,11 @@ fun Application.configureRouting() {
     }
     install(ContentNegotiation) {
         json()
+    }
+    install(SimpleCache) {
+        memoryCache {
+            invalidateAt = 10.seconds
+        }
     }
     routing {
         get("/api/transit") {
@@ -52,27 +61,29 @@ fun Application.configureRouting() {
             call.respond(mapOf("status" to "ok"))
         }
 
-        get("/result") {
-            val from = call.request.queryParameters["from"].toString()
-            val to = call.request.queryParameters["to"].toString()
+        cacheOutput {
+            get("/result") {
+                val from = call.request.queryParameters["from"].toString()
+                val to = call.request.queryParameters["to"].toString()
 
-            if (from == "null" || to == "null" || from.isEmpty() || to.isEmpty()) {
-                call.respondText(text = "400: From or To is empty", status = HttpStatusCode.BadRequest)
-                return@get
+                if (from == "null" || to == "null" || from.isEmpty() || to.isEmpty()) {
+                    call.respondText(text = "400: From or To is empty", status = HttpStatusCode.BadRequest)
+                    return@get
+                }
+
+                val transitInfoService = TransitInfoService(TransitParams(from, to, "2021/10/10", "12:00"))
+                val res = try {
+                    transitInfoService.getTransit()
+                } catch (e: IllegalArgumentException) {
+                    call.respondHtmlTemplate(RouteNotFoundPageTemplate()) {}
+                    return@get
+                } catch (e: Exception) {
+                    call.respondHtmlTemplate(ServerErrorPageTemplate(e.toString().split(":")[0])) {}
+                    return@get
+                }
+
+                call.respondHtmlTemplate(ResultPageTemplate(res)) {}
             }
-
-            val transitInfoService = TransitInfoService(TransitParams(from, to, "2021/10/10", "12:00"))
-            val res = try {
-                transitInfoService.getTransit()
-            } catch (e: IllegalArgumentException) {
-                call.respondHtmlTemplate(RouteNotFoundPageTemplate()) {}
-                return@get
-            } catch (e: Exception) {
-                call.respondHtmlTemplate(ServerErrorPageTemplate(e.toString().split(":")[0])) {}
-                return@get
-            }
-
-            call.respondHtmlTemplate(ResultPageTemplate(res)) {}
         }
 
         // Static plugin.

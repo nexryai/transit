@@ -5,6 +5,8 @@ import kotlinx.css.CssBuilder
 import kotlinx.css.div
 import kotlinx.html.*
 import me.nexryai.transit.entities.TransitInfo
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class ContentTemplate: Template<FlowContent> {
     override fun FlowContent.apply() {
@@ -146,6 +148,7 @@ class WelcomePageTemplate: Template<HTML> {
 }
 
 class ResultTemplate(private val result: TransitInfo): Template<FlowContent> {
+    private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     override fun FlowContent.apply() {
         h3 {
             +"Result"
@@ -223,6 +226,9 @@ class ResultTemplate(private val result: TransitInfo): Template<FlowContent> {
                     }
                 }
             }
+        }
+        p(classes = "generated-at") {
+            +"Generated at ${LocalDateTime.now().format(dateFormatter)}"
         }
     }
 }

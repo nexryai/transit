@@ -24,6 +24,8 @@ repositories {
 
 dependencies {
     implementation("org.jsoup:jsoup:1.17.2")
+    implementation("com.ucasoft.ktor:ktor-simple-cache:0.3.1")
+    implementation("com.ucasoft.ktor:ktor-simple-memory-cache:0.3.1")
 
     implementation("io.ktor:ktor-server-core-jvm")
     implementation("io.ktor:ktor-server-host-common-jvm")

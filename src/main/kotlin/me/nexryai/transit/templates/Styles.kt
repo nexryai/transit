@@ -129,4 +129,10 @@ var styles = CssBuilder().apply {
     rule(".num-of-stops") {
         color = Color("#8e8e8e")
     }
+
+    rule(".generated-at") {
+        color = Color("#666")
+        marginTop = 20.px
+        textAlign = TextAlign.right
+    }
 }
