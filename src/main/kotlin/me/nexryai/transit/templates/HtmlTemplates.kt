@@ -209,7 +209,7 @@ class ResultTemplate(private val result: TransitInfo): Template<FlowContent> {
                             }
                         }
                         if (transfer.train!!.numOfStops != 0) {
-                            p {
+                            p(classes = "num-of-stops") {
                                 i("ti ti-map-pins result-icon")
                                 +" ${transfer.train!!.numOfStops}駅乗車"
                             }

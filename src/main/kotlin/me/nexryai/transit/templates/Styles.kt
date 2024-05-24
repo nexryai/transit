@@ -110,4 +110,8 @@ var styles = CssBuilder().apply {
         color = Color("#2d2d2d")
         fontWeight = FontWeight.w700
     }
+
+    rule(".num-of-stops") {
+        color = Color("#8e8e8e")
+    }
 }
