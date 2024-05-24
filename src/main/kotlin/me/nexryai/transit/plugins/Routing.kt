@@ -12,6 +12,8 @@ import io.ktor.server.routing.*
 import me.nexryai.transit.entities.TransitParams
 import me.nexryai.transit.services.TransitInfoService
 import me.nexryai.transit.templates.ResultPageTemplate
+import me.nexryai.transit.templates.RouteNotFoundPageTemplate
+import me.nexryai.transit.templates.ServerErrorPageTemplate
 import me.nexryai.transit.templates.WelcomePageTemplate
 
 fun Application.configureRouting() {
@@ -63,10 +65,10 @@ fun Application.configureRouting() {
             val res = try {
                 transitInfoService.getTransit()
             } catch (e: IllegalArgumentException) {
-                call.respondText(text = "Invalid params or route not found", status = HttpStatusCode.BadRequest)
+                call.respondHtmlTemplate(RouteNotFoundPageTemplate()) {}
                 return@get
             } catch (e: Exception) {
-                call.respondText(text = "500: Internal server error", status = HttpStatusCode.InternalServerError)
+                call.respondHtmlTemplate(ServerErrorPageTemplate(e.toString().split(":")[0])) {}
                 return@get
             }
 

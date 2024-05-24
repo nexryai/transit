@@ -43,6 +43,21 @@ var styles = CssBuilder().apply {
         fontStyle = FontStyle.normal
     }
 
+
+    rule("#error-page") {
+        marginTop = 100.px
+    }
+
+    rule(".error-page-title") {
+        fontFamily = "'Ubuntu', sans-serif"
+        fontWeight = FontWeight.w300
+    }
+
+    rule(".error-page-detail") {
+        fontFamily = "monospace"
+        color = Color("#666")
+    }
+
     rule(".form") {
         display = Display.flex
         flexDirection = FlexDirection.column
