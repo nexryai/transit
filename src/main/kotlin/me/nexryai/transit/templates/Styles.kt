@@ -89,7 +89,7 @@ var styles = CssBuilder().apply {
         marginTop = 4.px
     }
 
-    rule(".transfer-arrive-time") {
+    rule(".transfer-platform-info") {
         textAlign = TextAlign.right
         marginRight = 10.px
     }
@@ -97,6 +97,7 @@ var styles = CssBuilder().apply {
     rule(".transfer-depart-time") {
         marginRight = 10.px
         color = Color("#666")
+        fontFamily = "'Ubuntu', sans-serif"
     }
 
     rule(".transfer-station-name-subtext") {

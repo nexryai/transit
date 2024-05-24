@@ -9,6 +9,8 @@ data class Train(
     val destination: String,
     val numOfStops: Int,
     val style: String,
+    val departPlatform: String,
+    val arrivePlatform: String,
 )
 
 @Serializable

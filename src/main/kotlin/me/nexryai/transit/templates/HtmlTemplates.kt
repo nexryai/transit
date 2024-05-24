@@ -179,10 +179,10 @@ class ResultTemplate(private val result: TransitInfo): Template<FlowContent> {
 
                         +transfer.stationName
                     }
-                    p(classes = "transfer-arrive-time") {
-                        if (i != 0 && i != result.transfers.size - 1) {
-                            i("ti ti-plane-arrival result-icon")
-                            +" ${transfer.arrive} "
+                    p(classes = "transfer-platform-info") {
+                        if (i != result.transfers.size - 1 && transfer.train?.departPlatform?.isNotEmpty() == true) {
+                            i("ti ti-flag-3 result-icon")
+                            +" ${transfer.train?.departPlatform} "
                         }
                     }
                 }
@@ -205,8 +205,17 @@ class ResultTemplate(private val result: TransitInfo): Template<FlowContent> {
                             } else {
                                 +"${transfer.train!!.displayInfo} ${transfer.train!!.destination}"
                             }
-                            if (transfer.train!!.numOfStops != 0) {
-                                +" (${transfer.train!!.numOfStops}駅乗車)"
+                        }
+                        if (transfer.train!!.numOfStops != 0) {
+                            p {
+                                i("ti ti-map-pins result-icon")
+                                +" ${transfer.train!!.numOfStops}駅乗車"
+                            }
+                        }
+                        if (i != result.transfers.size - 1) {
+                            p {
+                                i("ti ti-plane-arrival result-icon")
+                                +" ${result.transfers[i + 1].arrive} "
                             }
                         }
                     }

@@ -95,8 +95,23 @@ class TransitInfoService(private val params: TransitParams) {
             val trainName = trainElm.select("div").first()?.ownText() ?: "不明"
             val trainColorCss = trainElm.select("span").first()?.attr("style") ?: ""
 
+            // 行き先の取得
             val destination = train.select("span.destination").text()
+
+            // 発着ホームの取得
             val platform = train.select("span.platform").text()
+            val departPlatform = try {
+                platform.split(" → ")[0].removePrefix("[発] ")
+            } catch (e: Exception) {
+                "不明"
+            }
+            val arrivePlatform = try {
+                platform.split(" → ")[1].removePrefix("[着] ")
+            } catch (e: Exception) {
+                "不明"
+            }
+
+            // 駅数の取得
             val numOfStops = try {
                 train.select("span.stopNum").text().removeSuffix("駅").toInt()
             } catch (e: Exception) {
@@ -105,7 +120,7 @@ class TransitInfoService(private val params: TransitParams) {
 
             log.debug(" | $trainName $destination [$platform]")
 
-            val t = Train(trainName, destination, numOfStops, trainColorCss)
+            val t = Train(trainName, destination, numOfStops, trainColorCss, departPlatform, arrivePlatform)
             transferResults[i].train = t
         }
 
