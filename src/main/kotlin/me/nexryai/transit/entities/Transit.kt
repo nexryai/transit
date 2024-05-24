@@ -8,6 +8,7 @@ data class Train(
     val displayInfo: String,
     val destination: String,
     val numOfStops: Int,
+    val style: String,
 )
 
 @Serializable

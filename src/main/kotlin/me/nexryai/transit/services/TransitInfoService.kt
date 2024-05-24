@@ -93,6 +93,7 @@ class TransitInfoService(private val params: TransitParams) {
         for ((i, train) in trains.withIndex()) {
             val trainElm = train.select("li.transport")
             val trainName = trainElm.select("div").first()?.ownText() ?: "不明"
+            val trainColorCss = trainElm.select("span").first()?.attr("style") ?: ""
 
             val destination = train.select("span.destination").text()
             val platform = train.select("span.platform").text()
@@ -104,7 +105,7 @@ class TransitInfoService(private val params: TransitParams) {
 
             log.debug(" | $trainName $destination [$platform]")
 
-            val t = Train(trainName, destination, numOfStops)
+            val t = Train(trainName, destination, numOfStops, trainColorCss)
             transferResults[i].train = t
         }
 

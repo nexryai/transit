@@ -1,6 +1,7 @@
 package me.nexryai.transit.templates
 
 import io.ktor.server.html.*
+import kotlinx.css.CssBuilder
 import kotlinx.css.div
 import kotlinx.html.*
 import me.nexryai.transit.entities.TransitInfo
@@ -150,32 +151,57 @@ class ResultTemplate(private val result: TransitInfo): Template<FlowContent> {
             +"Result"
         }
         for ((i, transfer) in result.transfers.withIndex()) {
-            div {
-                h4 {
-                    +transfer.stationName
-                }
-                p {
-                    if (i != 0 && i != result.transfers.size - 1) {
-                        i("ti ti-plane-arrival result-icon")
-                        +" ${transfer.arrive} "
-                    }
-                }
-                p {
-                    if (i == 0 || i == result.transfers.size - 1) {
-                        +transfer.depart
-                    } else {
-                        i("ti ti-plane-departure result-icon")
-                        +" ${transfer.depart} "
-                    }
-
-                    if (transfer.train != null){
-                        if (transfer.train!!.destination.isEmpty()) {
-                            +"徒歩"
+            div(classes = "transfer") {
+                div(classes = "transfer-station") {
+                    h4(classes = "transfer-station-name") {
+                        if (i == 0) {
+                            span(classes = "transfer-depart-time") {
+                                +"${transfer.depart} "
+                            }
+                            i("ti ti-flag result-icon")
+                            +" 出発地 "
+                        } else if (i == result.transfers.size - 1) {
+                            span(classes = "transfer-depart-time") {
+                                +"${transfer.depart} "
+                            }
+                            i("ti ti-map-check result-icon")
+                            +" 目的地 "
                         } else {
-                            +"${transfer.train!!.displayInfo} ${transfer.train!!.destination}"
+                            i("ti ti-map-pin result-icon")
+                            +" 乗換 "
                         }
-                        if (transfer.train!!.numOfStops != 0) {
-                            +" (${transfer.train!!.numOfStops}駅乗車)"
+
+                        +transfer.stationName
+                    }
+                    p(classes = "transfer-arrive-time") {
+                        if (i != 0 && i != result.transfers.size - 1) {
+                            i("ti ti-plane-arrival result-icon")
+                            +" ${transfer.arrive} "
+                        }
+                    }
+                }
+
+                val cssStr = if (transfer.train != null) {
+                    transfer.train!!.style
+                } else {
+                    ""
+                }
+
+                if (transfer.train != null){
+                    div(classes = "transfer-train") {
+                        style = cssStr
+                        p {
+                            i("ti ti-plane-departure result-icon")
+                            +" ${transfer.depart} "
+
+                            if (transfer.train!!.destination.isEmpty()) {
+                                +"徒歩"
+                            } else {
+                                +"${transfer.train!!.displayInfo} ${transfer.train!!.destination}"
+                            }
+                            if (transfer.train!!.numOfStops != 0) {
+                                +" (${transfer.train!!.numOfStops}駅乗車)"
+                            }
                         }
                     }
                 }

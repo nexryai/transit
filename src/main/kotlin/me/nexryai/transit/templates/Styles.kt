@@ -1,8 +1,9 @@
 package me.nexryai.transit.templates
 
 import kotlinx.css.*
+import kotlinx.css.Float
 
-val styles = CssBuilder().apply {
+var styles = CssBuilder().apply {
     body {
         backgroundColor = Color("#f4f4f4")
     }
@@ -67,5 +68,34 @@ val styles = CssBuilder().apply {
 
     rule("#errorLabel") {
         color = Color("#bd0000")
+    }
+
+    rule(".transfer-station") {
+        border = Border(1.px, BorderStyle.solid, Color("#ccc"))
+        borderRadius = 5.px
+        paddingLeft = 10.px
+        height = 50.px
+        overflow = Overflow.hidden
+    }
+
+    rule(".transfer-train") {
+        borderLeft = Border(3.px, BorderStyle.solid, Color("#ccc"))
+        marginLeft = 32.px
+        paddingLeft = 10.px
+    }
+
+    rule(".transfer-station-name") {
+        float = Float.left
+        marginTop = 4.px
+    }
+
+    rule(".transfer-arrive-time") {
+        textAlign = TextAlign.right
+        marginRight = 10.px
+    }
+
+    rule(".transfer-depart-time") {
+        marginRight = 10.px
+        color = Color("#666")
     }
 }
