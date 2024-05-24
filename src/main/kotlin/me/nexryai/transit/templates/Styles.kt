@@ -98,4 +98,10 @@ var styles = CssBuilder().apply {
         marginRight = 10.px
         color = Color("#666")
     }
+
+    rule(".transfer-station-name-subtext") {
+        color = Color("#666")
+        marginRight = 10.px
+        fontWeight = FontWeight.w300
+    }
 }

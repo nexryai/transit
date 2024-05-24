@@ -159,16 +159,22 @@ class ResultTemplate(private val result: TransitInfo): Template<FlowContent> {
                                 +"${transfer.depart} "
                             }
                             i("ti ti-flag result-icon")
-                            +" 出発地 "
+                            span(classes = "transfer-station-name-subtext") {
+                                +" 出発地 "
+                            }
                         } else if (i == result.transfers.size - 1) {
                             span(classes = "transfer-depart-time") {
                                 +"${transfer.depart} "
                             }
                             i("ti ti-map-check result-icon")
-                            +" 目的地 "
+                            span(classes = "transfer-station-name-subtext") {
+                                +" 目的地 "
+                            }
                         } else {
                             i("ti ti-map-pin result-icon")
-                            +" 乗換 "
+                            span(classes = "transfer-station-name-subtext") {
+                                +" 乗換 "
+                            }
                         }
 
                         +transfer.stationName
