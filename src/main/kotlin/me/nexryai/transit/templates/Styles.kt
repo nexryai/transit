@@ -105,4 +105,9 @@ var styles = CssBuilder().apply {
         marginRight = 10.px
         fontWeight = FontWeight.w300
     }
+
+    rule(".train-info") {
+        color = Color("#2d2d2d")
+        fontWeight = FontWeight.w700
+    }
 }

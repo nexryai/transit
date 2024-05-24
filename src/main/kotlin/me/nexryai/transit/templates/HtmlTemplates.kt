@@ -203,7 +203,9 @@ class ResultTemplate(private val result: TransitInfo): Template<FlowContent> {
                             if (transfer.train!!.destination.isEmpty()) {
                                 +"徒歩"
                             } else {
-                                +"${transfer.train!!.displayInfo} ${transfer.train!!.destination}"
+                                span(classes = "train-info") {
+                                    +"${transfer.train!!.displayInfo} ${transfer.train!!.destination}"
+                                }
                             }
                         }
                         if (transfer.train!!.numOfStops != 0) {
