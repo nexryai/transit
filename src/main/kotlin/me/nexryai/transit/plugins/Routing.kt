@@ -11,7 +11,8 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import me.nexryai.transit.entities.TransitParams
 import me.nexryai.transit.services.TransitInfoService
-import me.nexryai.transit.templates.LayoutTemplate
+import me.nexryai.transit.templates.ResultPageTemplate
+import me.nexryai.transit.templates.WelcomePageTemplate
 
 fun Application.configureRouting() {
     install(StatusPages) {
@@ -49,6 +50,29 @@ fun Application.configureRouting() {
             call.respond(mapOf("status" to "ok"))
         }
 
+        get("/result") {
+            val from = call.request.queryParameters["from"].toString()
+            val to = call.request.queryParameters["to"].toString()
+
+            if (from == "null" || to == "null" || from.isEmpty() || to.isEmpty()) {
+                call.respondText(text = "400: From or To is empty", status = HttpStatusCode.BadRequest)
+                return@get
+            }
+
+            val transitInfoService = TransitInfoService(TransitParams(from, to, "2021/10/10", "12:00"))
+            val res = try {
+                transitInfoService.getTransit()
+            } catch (e: IllegalArgumentException) {
+                call.respondText(text = "Invalid params or route not found", status = HttpStatusCode.BadRequest)
+                return@get
+            } catch (e: Exception) {
+                call.respondText(text = "500: Internal server error", status = HttpStatusCode.InternalServerError)
+                return@get
+            }
+
+            call.respondHtmlTemplate(ResultPageTemplate(res)) {}
+        }
+
         // Static plugin.
         staticResources("/static", "static")
         get("/style.css") {
@@ -57,7 +81,7 @@ fun Application.configureRouting() {
             call.respondText(css.toString(), ContentType.Text.CSS)
         }
         get("/") {
-            call.respondHtmlTemplate(LayoutTemplate()) {}
+            call.respondHtmlTemplate(WelcomePageTemplate()) {}
         }
     }
 }

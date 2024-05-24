@@ -21,5 +21,5 @@ function jumpToResult() {
     console.log("from: " + from);
     console.log("to: " + to);
 
-    window.location.href = "/result";
+    window.location.href = "/result?from=" + from + "&to=" + to;
 }

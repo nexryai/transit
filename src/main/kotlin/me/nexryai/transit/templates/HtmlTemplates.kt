@@ -1,7 +1,9 @@
 package me.nexryai.transit.templates
 
 import io.ktor.server.html.*
+import kotlinx.css.div
 import kotlinx.html.*
+import me.nexryai.transit.entities.TransitInfo
 
 class ContentTemplate: Template<FlowContent> {
     override fun FlowContent.apply() {
@@ -118,7 +120,7 @@ class HeadTemplate: Template<HTML> {
     }
 }
 
-class LayoutTemplate: Template<HTML> {
+class WelcomePageTemplate: Template<HTML> {
     private val head = TemplatePlaceholder<HeadTemplate>()
     private val content = TemplatePlaceholder<ContentTemplate>()
     override fun HTML.apply() {
@@ -136,6 +138,70 @@ class LayoutTemplate: Template<HTML> {
                 div {
                     id = "content"
                     insert(ContentTemplate(), content)
+                }
+            }
+        }
+    }
+}
+
+class ResultTemplate(private val result: TransitInfo): Template<FlowContent> {
+    override fun FlowContent.apply() {
+        h3 {
+            +"Result"
+        }
+        for ((i, transfer) in result.transfers.withIndex()) {
+            div {
+                h4 {
+                    +transfer.stationName
+                }
+                p {
+                    if (i != 0 && i != result.transfers.size - 1) {
+                        i("ti ti-plane-arrival result-icon")
+                        +" ${transfer.arrive} "
+                    }
+                }
+                p {
+                    if (i == 0 || i == result.transfers.size - 1) {
+                        +transfer.depart
+                    } else {
+                        i("ti ti-plane-departure result-icon")
+                        +" ${transfer.depart} "
+                    }
+
+                    if (transfer.train != null){
+                        if (transfer.train!!.destination.isEmpty()) {
+                            +"徒歩"
+                        } else {
+                            +"${transfer.train!!.displayInfo} ${transfer.train!!.destination}"
+                        }
+                        if (transfer.train!!.numOfStops != 0) {
+                            +" (${transfer.train!!.numOfStops}駅乗車)"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+class ResultPageTemplate(private val result: TransitInfo): Template<HTML> {
+    private val head = TemplatePlaceholder<HeadTemplate>()
+    private val content = TemplatePlaceholder<ResultTemplate>()
+    override fun HTML.apply() {
+        insert(HeadTemplate(), head)
+        body {
+            div {
+                id = "app"
+                div {
+                    id = "header"
+                    h1 {
+                        +"TransitKt"
+                    }
+                }
+
+                div {
+                    id = "content"
+                    insert(ResultTemplate(result), content)
                 }
             }
         }
