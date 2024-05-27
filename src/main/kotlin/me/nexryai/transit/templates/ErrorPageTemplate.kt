@@ -3,7 +3,7 @@ package me.nexryai.transit.templates
 import io.ktor.server.html.*
 import kotlinx.html.*
 
-class RouteNotFoundPageTemplate(): Template<HTML> {
+class RouteNotFoundPageTemplate: Template<HTML> {
     private val head = TemplatePlaceholder<HeadTemplate>()
     override fun HTML.apply() {
         insert(HeadTemplate(), head)

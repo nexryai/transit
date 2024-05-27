@@ -12,12 +12,14 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import me.nexryai.transit.entities.TimeMode
 import me.nexryai.transit.entities.TransitParams
 import me.nexryai.transit.services.TransitInfoService
 import me.nexryai.transit.templates.ResultPageTemplate
 import me.nexryai.transit.templates.RouteNotFoundPageTemplate
 import me.nexryai.transit.templates.ServerErrorPageTemplate
 import me.nexryai.transit.templates.WelcomePageTemplate
+import java.time.LocalDateTime
 import kotlin.time.Duration.Companion.seconds
 
 fun Application.configureRouting() {
@@ -35,29 +37,7 @@ fun Application.configureRouting() {
         }
     }
     routing {
-        get("/api/transit") {
-            val from = call.request.queryParameters["from"].toString()
-            val to = call.request.queryParameters["to"].toString()
-
-            if (from == "null" || to == "null" || from.isEmpty() || to.isEmpty()) {
-                call.respondText(text = "400: From or To is empty", status = HttpStatusCode.BadRequest)
-                return@get
-            }
-
-            val transitInfoService = TransitInfoService(TransitParams(from, to, "2021/10/10", "12:00"))
-            val res = try {
-                transitInfoService.getTransit()
-            } catch (e: IllegalArgumentException) {
-                call.respondText(text = "Invalid params or route not found", status = HttpStatusCode.BadRequest)
-            } catch (e: Exception) {
-                call.respondText(text = "500: Internal server error", status = HttpStatusCode.InternalServerError)
-            }
-
-            //jsonを返す
-            call.respond(res)
-        }
-
-        get("/api/health") {
+        get("/health") {
             call.respond(mapOf("status" to "ok"))
         }
 
@@ -66,12 +46,33 @@ fun Application.configureRouting() {
                 val from = call.request.queryParameters["from"].toString()
                 val to = call.request.queryParameters["to"].toString()
 
+                var timeMode = if (call.request.queryParameters["timeMode"].toString() == "a") {
+                    TimeMode.ARRIVAL
+                } else if (call.request.queryParameters["timeMode"].toString() == "d") {
+                    TimeMode.DEPARTURE
+                } else {
+                    TimeMode.IGNORE
+                }
+
+                val timeString = call.request.queryParameters["time"].toString()
+                val parsedTime = if (timeString != "null") {
+                    try {
+                        LocalDateTime.parse(timeString)
+                    } catch (e: Exception) {
+                        LocalDateTime.now()
+                    }
+                } else {
+                    timeMode = TimeMode.IGNORE
+                    LocalDateTime.now()
+                }
+
+
                 if (from == "null" || to == "null" || from.isEmpty() || to.isEmpty()) {
                     call.respondText(text = "400: From or To is empty", status = HttpStatusCode.BadRequest)
                     return@get
                 }
 
-                val transitInfoService = TransitInfoService(TransitParams(from, to, "2021/10/10", "12:00"))
+                val transitInfoService = TransitInfoService(TransitParams(from, to, parsedTime, timeMode))
                 val res = try {
                     transitInfoService.getTransit()
                 } catch (e: IllegalArgumentException) {

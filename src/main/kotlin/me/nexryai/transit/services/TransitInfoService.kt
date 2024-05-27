@@ -1,9 +1,6 @@
 package me.nexryai.transit.services
 
-import me.nexryai.transit.entities.Train
-import me.nexryai.transit.entities.Transfer
-import me.nexryai.transit.entities.TransitInfo
-import me.nexryai.transit.entities.TransitParams
+import me.nexryai.transit.entities.*
 import me.nexryai.transit.utils.Logger
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -20,7 +17,26 @@ class TransitInfoService(private val params: TransitParams) {
         var url = "https://transit.yahoo.co.jp/search/print"
         url += "?from=${params.from}"
         url += "&to=${params.to}"
-        url += "&type=1&ticket=ic&expkind=1&userpass=1&ws=3&s=0&al=1&shin=1&ex=1&hb=1&lb=1&sr=1&no=1"
+
+        if (params.timeMode != TimeMode.IGNORE) {
+            val y = params.time.year.toString()
+            // 0埋め
+            val m = params.time.monthValue.toString().padStart(2, '0')
+            val d = params.time.dayOfMonth.toString().padStart(2, '0')
+            val hour = params.time.hour.toString().padStart(2, '0')
+            val min = params.time.minute.toString().padStart(2, '0')
+
+            url += "&y=${y}&m=${m}&d=${d}&hh=${hour}&m1=${min[0]}&m2=${min[1]}"
+        }
+
+        url += if (params.timeMode == TimeMode.ARRIVAL) {
+            "&type=4"
+        } else {
+            "&type=1"
+        }
+
+        url += "&ticket=ic&expkind=1&userpass=1&ws=3&s=0&al=1&shin=1&ex=1&hb=1&lb=1&sr=1&no=1"
+        log.debug("URL: $url")
         return url
     }
 

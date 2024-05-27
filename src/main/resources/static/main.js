@@ -16,10 +16,25 @@ function jumpToResult() {
         return;
     }
 
+    const timeModeArrival = document.getElementById("timeModeArrival").checked;
+    const timeModeDeparture = document.getElementById("timeModeDeparture").checked;
     const date = document.getElementById("date").value;
+    const time = document.getElementById("time").value;
 
     console.log("from: " + from);
     console.log("to: " + to);
 
-    window.location.href = "/result?from=" + from + "&to=" + to;
+    let url = "/result?from=" + from + "&to=" + to;
+    if (date !== "" && time !== "") {
+        url += "&time=" + date + "T" + time + ":00";
+    }
+
+    if (timeModeArrival) {
+        url += "&timeMode=a";
+    } else if (timeModeDeparture) {
+        url += "&timeMode=d";
+    }
+
+
+    window.location.href = url;
 }

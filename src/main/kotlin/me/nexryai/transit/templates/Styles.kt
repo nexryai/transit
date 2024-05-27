@@ -69,6 +69,14 @@ var styles = CssBuilder().apply {
         margin = Margin(0.px, 0.px, 32.px, 0.px)
     }
 
+    rule(".form-radio") {
+        width = 10.px
+    }
+
+    rule(".form-radio-label") {
+        marginRight = 16.px
+    }
+
     rule(".form-button") {
         textAlign = TextAlign.right
     }
