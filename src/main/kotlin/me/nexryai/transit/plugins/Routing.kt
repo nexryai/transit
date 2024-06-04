@@ -43,6 +43,8 @@ fun Application.configureRouting() {
 
         cacheOutput {
             get("/result") {
+                val respWithJson = call.request.queryParameters["format"].toString() == "json"
+
                 val from = call.request.queryParameters["from"].toString()
                 val to = call.request.queryParameters["to"].toString()
 
@@ -68,7 +70,12 @@ fun Application.configureRouting() {
 
 
                 if (from == "null" || to == "null" || from.isEmpty() || to.isEmpty()) {
-                    call.respondText(text = "400: From or To is empty", status = HttpStatusCode.BadRequest)
+                    if (respWithJson) {
+                        call.respond(mapOf("error" to "400: From or To is empty"))
+                    } else {
+                        call.respondText(text = "400: From or To is empty", status = HttpStatusCode.BadRequest)
+                    }
+
                     return@get
                 }
 
@@ -76,10 +83,24 @@ fun Application.configureRouting() {
                 val res = try {
                     transitInfoService.getTransit()
                 } catch (e: IllegalArgumentException) {
-                    call.respondHtmlTemplate(RouteNotFoundPageTemplate()) {}
+                    if (respWithJson) {
+                        call.respond(mapOf("error" to "400: Route not found"))
+                    } else {
+                        call.respondHtmlTemplate(RouteNotFoundPageTemplate()) {}
+                    }
+
                     return@get
                 } catch (e: Exception) {
-                    call.respondHtmlTemplate(ServerErrorPageTemplate(e.toString().split(":")[0])) {}
+                    if (respWithJson) {
+                        call.respond(mapOf("error" to "500: Internal Server Error"))
+                    } else {
+                        call.respondHtmlTemplate(ServerErrorPageTemplate(e.toString().split(":")[0])) {}
+                    }
+                    return@get
+                }
+
+                if (respWithJson) {
+                    call.respond(res)
                     return@get
                 }
 
